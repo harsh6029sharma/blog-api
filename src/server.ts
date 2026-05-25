@@ -6,6 +6,7 @@ const app = express()
 
 const PORT = Number(process.env.PORT)||3000
 
+// built-in middlewares for json body cookie parser
 app.use(express.json({limit:"16kb"}))
 app.use(express.urlencoded({extended:true, limit:"16kb"}))
 app.use(express.static("public"))
