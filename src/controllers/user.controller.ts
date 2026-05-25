@@ -1,11 +1,9 @@
 import type { Request, Response } from "express"
 import { prisma } from '../db/db'
 import { ApiResponse } from "../utils/ApiResponse"
-import jwt from "jsonwebtoken"
 import { ApiError } from "../utils/ApiError"
 import { generateAccessToken, generateRefreshToken, passwordChecking, passwordHashing } from "../utils/auth"
 import type { User } from "../utils/Types"
-import { use } from "react"
 
 
 const generateAccessAndRefreshToken = async (userId: number): Promise<{ accessToken: string, refreshToken: string }> => {
@@ -56,7 +54,7 @@ const registerUser = async (req: Request, res: Response) => {
   })
 
   if (existUser) {
-    return new ApiError(409, "User already exist with this email")
+    throw new ApiError(409, "User already exist with this email")
   }
 
   // hash the password before saving in the db
@@ -76,11 +74,12 @@ const registerUser = async (req: Request, res: Response) => {
     },
     select: {
       name: true,
-      email: true
+      email: true,
     }
   })
 
-  return res.json(201).json(
+
+  return res.status(201).json(
     new ApiResponse(200, createdUser, "User registered successfully!")
   )
 }
@@ -104,7 +103,7 @@ const loginUser = async (req: Request, res: Response) => {
     throw new ApiError(404, "User does not exist!")
   }
 
-  const isPasswordValid = await passwordChecking(user.password, password)
+  const isPasswordValid = await passwordChecking(password, user.password)
 
   if (!isPasswordValid) {
     throw new ApiError(400, "Incorrect password")
@@ -135,9 +134,14 @@ const loginUser = async (req: Request, res: Response) => {
     new ApiResponse(
       200,
       {
-        user:loggedInUser,accessToken,refreshToken
+        user:loggedInUser,accessToken
       },
       "User logged in successfully"
     )
   )
+}
+
+export {
+  registerUser,
+  loginUser
 }
