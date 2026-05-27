@@ -10,3 +10,5 @@ const asyncHandler = (requestHandler: RequestHandler):RequestHandler=> {
     }
 
 }
+
+export default asyncHandler

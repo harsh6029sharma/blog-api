@@ -2,6 +2,7 @@ import bcrypt from 'bcrypt'
 import jwt from 'jsonwebtoken'
 import type { User } from './Types'
 import { ApiError } from './ApiError'
+import { verifyJwt } from '../middlewares/auth.middleware'
 
 const passwordHashing = async(password:string):Promise<string> =>{
     const hashedPassword = await bcrypt.hash(password,10)
@@ -55,6 +56,7 @@ const generateRefreshToken = (data:User)=>{
     )
     return token
 }
+
 
 export {
     passwordHashing,
