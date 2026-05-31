@@ -18,6 +18,8 @@ datasource db {
     email String @unique
     password String
     refreshToken String?
+    resetPasswordToken String?
+    resetPasswordExpiry DateTime?
     posts Blog[]
     comments Comment[]
     createdAt DateTime @default(now())
